@@ -5,11 +5,10 @@
 var test = require('ava')
 var request = require('supertest')
 
-var db = require('../../db')
 var app = require('../../server')
-var setup_db = require('../setup_db')
+var setupDb = require('../setup_db')
 
-setup_db(test, function (db) {
+setupDb(test, function (db) {
   app.set('knex', db)
 })
 
@@ -48,13 +47,12 @@ test.cb('getUsers gets a list of usernames', function (t) {
 })
 test.cb('addUser adds a new user to the db', function (t) {
   request(app)
-  .post('users/addUser')
+  .post('/users/addUser')
   .set('Content-Type', 'application/json')
   .send('{"name":"Bob", "email":"bob@gmail.com"}')
   .end(function (err, res) {
-    if (err) throw err
-    console.log(res.body)
-    t.is('Bob', res.body.users[0].name)
+    if (err) console.log(err.message)
+    t.is('Bob', res.body[0].name)
     t.end()
   })
 })
